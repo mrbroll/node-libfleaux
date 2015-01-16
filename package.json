@@ -1,0 +1,26 @@
+{
+  "name": "node-libfleaux",
+  "version": "0.0.0",
+  "description": "node wrapper for libfleaux",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/all.js",
+    "install": "node-gyp rebuild",
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrbroll/node-libfleaux.git"
+  },
+  "keywords": [
+    "fleaux",
+    "libfleaux",
+    "text",
+    "editor"
+  ],
+  "author": "Michael R. Broll",
+  "license": "MIT",
+  "gypfile": true,
+  "bugs": {
+    "url": "https://github.com/mrbroll/node-libfleaux/issues"
+  }
+}
