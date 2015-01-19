@@ -3,7 +3,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
-#include "../../../deps/libsdnb/include/sdnb/gap_vector.hh"
+#include "../deps/libsdnb/include/sdnb/gap_vector.hh"
 
 #ifndef FLEAUX_EDITOR_H_
 #define FLEAUX_EDITOR_H_

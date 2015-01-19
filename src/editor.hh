@@ -1,12 +1,12 @@
 #ifndef NODE_FLEAUX_EDITOR_HH_
 #define NODE_FLEAUX_EDITOR_HH_
 
-#include "deps/libfleaux/include/editor.hh"
+#include "../deps/libfleaux/include/editor.hh"
 #include <node.h>
 
 using namespace v8;
 
-class Cursor
+class Cursor;
 
 class Editor : public Fleaux::Editor, public node::ObjectWrap
 {
@@ -20,7 +20,9 @@ class Editor : public Fleaux::Editor, public node::ObjectWrap
         static Handle<Value> New(const Arguments& args);
         static Persistent<Function> constructor;
 
-        static Handle<Object> GetCursor(const Arguments& args);
+        static Handle<Value> GetCursor(const Arguments& args);
+
+        Cursor* __Cursor;
 };
 
 
@@ -29,8 +31,8 @@ class Cursor : public Fleaux::Cursor, public node::ObjectWrap
     public:
         static void Init(Handle<Object> exports);
     private:
-        explicit Cursor(Editor* ed);
-        ~Cursor(void);
+        explicit Cursor(Editor* ed) : Fleaux::Cursor(ed) {};
+        ~Cursor(void) {};
 
         static Handle<Value> New(const Arguments& args);
         static Persistent<Function> constructor;
