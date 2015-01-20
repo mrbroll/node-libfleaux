@@ -22,6 +22,18 @@
                     "libraries": [ "../deps/libfleaux/lib/linux/libfleaux.a" ] 
                 }],
                 ["OS=='mac'", {
+                    "xcode_settings": {
+                        "OTHER_CPLUSPLUSFLAGS": [
+                            "-mmacosx-version-min=10.7",
+                            "-std=c++11",
+                            "-stdlib=libc++",
+                            "-fPIC"
+                        ],
+                        "OTHER_LDFLAGS": [
+                            "-stdlib=libc++"
+                        ],
+                        "MACOSX_DEPLOYMENT_TARGET": "10.7"
+                    },
                     "libraries": [ "../deps/libfleaux/lib/mac/libfleaux.a" ] 
                 }],
                 ["OS=='win'", {
