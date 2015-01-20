@@ -28,8 +28,11 @@ class Editor : public Fleaux::Editor, public node::ObjectWrap
 
 class Cursor : public Fleaux::Cursor, public node::ObjectWrap
 {
+    friend class Editor;
+
     public:
         static void Init(Handle<Object> exports);
+
     private:
         explicit Cursor(Editor* ed) : Fleaux::Cursor(ed) {};
         ~Cursor(void) {};

@@ -9,12 +9,12 @@ Persistent<Function> Editor::constructor;
 
 Editor::Editor(void)
 {
-//    __Cursor = new Cursor(this);
+    __Cursor = new Cursor(this);
 }
 
 Editor::~Editor(void)
 {
-//    delete __Cursor;
+    delete __Cursor;
 }
 
 void
@@ -24,9 +24,9 @@ Editor::Init(Handle<Object> exports)
     tpl->SetClassName(String::NewSymbol("Editor"));
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
     tpl->PrototypeTemplate()->Set(  String::NewSymbol("getCursor"),
-                                    FunctionTemplate::New(GetCursor)->getFunction());
-    constructor = Persistent<Function>::New(tpl->GetFunction());
-    exports->Set(String::NewSymbol("Editor"), constructor);
+                                    FunctionTemplate::New(GetCursor)->GetFunction());
+    Editor::constructor = Persistent<Function>::New(tpl->GetFunction());
+    exports->Set(String::NewSymbol("Editor"), Editor::constructor);
 }
 
 Handle<Value>
@@ -38,6 +38,8 @@ Editor::New(const Arguments& args)
         ed->Wrap(args.This());
         return args.This();
     } else { //Editor()
+        const int argc = 1;
+        Local<Value> argv[argc] = { args[0] };
         return scope.Close(constructor->NewInstance(argc, argv));
     }
 }
@@ -46,11 +48,10 @@ Handle<Value>
 Editor::GetCursor(const Arguments& args)
 {
     HandleScope scope;
-    Persistent<Context> ctx = Context::New();
-    Handle<Object> global = ctx->Global();
-    Handle<Value> newArgs[1];
-    newArgs[0] = args.This();
-    Cursor
+    Editor* thisEd = ObjectWrap::Unwrap<Editor>(args.This());
+    Local<Object> cursObj = Object::New();
+    thisEd->__Cursor->Wrap(cursObj);
+    return scope.Close(cursObj);
 }
 
 Persistent<Function> Cursor::constructor;
@@ -60,23 +61,23 @@ Cursor::Init(Handle<Object> exports)
 {
     Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
     tpl->SetClassName(String::NewSymbol("Cursor"));
-    tpl->InstanceTemplate()->SetInternalFieldCount(1);
+    tpl->InstanceTemplate()->SetInternalFieldCount(7);
     tpl->PrototypeTemplate()->Set(  String::NewSymbol("insert"),
-                                    FunctionTemplate::New(Insert)->getFunction());
-    tpl-PrototypeTemplate()->Set(   String::NewSymbol("remove"),
-                                    FunctionTemplate::New(Remove)->getFunction());
+                                    FunctionTemplate::New(Insert)->GetFunction());
+    tpl->PrototypeTemplate()->Set(   String::NewSymbol("remove"),
+                                    FunctionTemplate::New(Remove)->GetFunction());
     tpl->PrototypeTemplate()->Set(  String::NewSymbol("getIndex"),
-                                    FunctionTemplate::New(GetIndex)->getFunction());
+                                    FunctionTemplate::New(GetIndex)->GetFunction());
     tpl->PrototypeTemplate()->Set(  String::NewSymbol("getX"),
-                                    FunctionTemplate::New(GetX)->getFunction());
-    tpl-PrototypeTemplate()->Set(   String::NewSymbol("getY"),
-                                    FunctionTemplate::New(GetY)->getFunction());
+                                    FunctionTemplate::New(GetX)->GetFunction());
+    tpl->PrototypeTemplate()->Set(   String::NewSymbol("getY"),
+                                    FunctionTemplate::New(GetY)->GetFunction());
     tpl->PrototypeTemplate()->Set(  String::NewSymbol("moveH"),
-                                    FunctionTemplate::New(MoveH)->getFunction());
+                                    FunctionTemplate::New(MoveH)->GetFunction());
     tpl->PrototypeTemplate()->Set(  String::NewSymbol("moveV"),
-                                    FunctionTemplate::New(MoveV)->getFunction());
-    constructor = Persistent<Function>::New(tpl->GetFunction());
-    exports->Set(String::NewSymbol("Editor"), constructor);
+                                    FunctionTemplate::New(MoveV)->GetFunction());
+    Cursor::constructor = Persistent<Function>::New(tpl->GetFunction());
+    exports->Set(String::NewSymbol("Cursor"), Cursor::constructor);
 }
 
 Handle<Value>
@@ -85,13 +86,17 @@ Cursor::New(const Arguments& args)
     HandleScope scope;
     if (args.IsConstructCall()) {
         if (args[0]->IsUndefined()) {
-            return ThrowException(String::New("ERROR: Must provide an argument"));
+            return ThrowException(String::New("ERROR: Cursor::New - Must provide an argument"));
         } else {
-        Cursor* curs = new Cursor(ObjectWrap::Unwrap<Editor>(args[0]));
-        curs->Wrap(args.This());
-        return args.This();
+            Local<Object> editorObj = Local<Object>::Cast(args[0]);
+            Cursor* curs = new Cursor(ObjectWrap::Unwrap<Editor>(editorObj));
+            curs->Wrap(args.This());
+            return args.This();
+        }
     } else {
-        return scop.Close(constructor->NewInstance(argc, argv));
+        const int argc = 1;
+        Local<Value> argv[argc] = { args[0] };
+        return scope.Close(constructor->NewInstance(argc, argv));
     }
 }
 
@@ -99,11 +104,12 @@ Handle<Value>
 Cursor::Insert(const Arguments& args)
 {
     if (args[0]->IsUndefined()) {
-        return ThrowException(String::New("ERROR: must provide an argument"));
+        return ThrowException(String::New("ERROR: Cursor::Insert - must provide an argument"));
     } else {
+        Cursor* thisCurs = ObjectWrap::Unwrap<Cursor>(args.This());
         /* input could be pretty big, so let's heap allocate the c++ string */
-        string input = new string(String::Utf8Value(args[0]));
-        insert(*input);
+        string* input = new string(*String::Utf8Value(args[0]));
+        thisCurs->insert(*input);
         delete input;
         return Undefined();
     }
@@ -112,11 +118,12 @@ Cursor::Insert(const Arguments& args)
 Handle<Value>
 Cursor::Remove(const Arguments& args)
 {
-    if (args[0]-IsUndefined()) {
-        return ThrowException(String::New("Error Must provide an argument"));
+    if (args[0]->IsUndefined()) {
+        return ThrowException(String::New("ERROR: Cursor::Remove - Must provide an argument"));
     } else {
+        Cursor* thisCurs = ObjectWrap::Unwrap<Cursor>(args.This());
         int length = (int)args[0]->IntegerValue();
-        remove(length);
+        thisCurs->remove(length);
         return Undefined();
     }
 }
@@ -124,21 +131,24 @@ Cursor::Remove(const Arguments& args)
 Handle<Value>
 Cursor::GetIndex(const Arguments& args)
 {
-    size_t index = getIndex();
+    Cursor* thisCurs = ObjectWrap::Unwrap<Cursor>(args.This());
+    size_t index = thisCurs->getIndex();
     return Number::New(static_cast<double>(index));
 }
 
 Handle<Value>
 Cursor::GetX(const Arguments& args)
 {
-    size_t x = getX();
+    Cursor* thisCurs = ObjectWrap::Unwrap<Cursor>(args.This());
+    size_t x = thisCurs->getX();
     return Number::New(static_cast<double>(x));
 }
 
 Handle<Value>
 Cursor::GetY(const Arguments& args)
 {
-    size_t y = getY();
+    Cursor* thisCurs = ObjectWrap::Unwrap<Cursor>(args.This());
+    size_t y = thisCurs->getY();
     return Number::New(static_cast<double>(y));
 }
 
@@ -146,10 +156,11 @@ Handle<Value>
 Cursor::MoveH(const Arguments& args)
 {
     if (args[0]->IsUndefined()) {
-        return ThrowException(String::New("ERROR: must provide an argument"));
+        return ThrowException(String::New("ERROR: Cursor::MoveH - must provide an argument"));
     } else {
+        Cursor* thisCurs = ObjectWrap::Unwrap<Cursor>(args.This());
         int offset = args[0]->IntegerValue();
-        moveH(offset);
+        thisCurs->moveH(offset);
         return Undefined();
     }
 }
@@ -158,10 +169,11 @@ Handle<Value>
 Cursor::MoveV(const Arguments& args)
 {
     if (args[0]->IsUndefined()) {
-        return ThrowException(String::New("ERROR: must provide an argument"));
+        return ThrowException(String::New("ERROR: Cursor::MoveV - must provide an argument"));
     } else {
-        int offset = args[0]->IntergerValue();
-        moveV(offset);
+        Cursor* thisCurs = ObjectWrap::Unwrap<Cursor>(args.This());
+        int offset = args[0]->IntegerValue();
+        thisCurs->moveV(offset);
         return Undefined();
     }
 }
