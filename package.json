@@ -4,7 +4,6 @@
   "description": "node wrapper for libfleaux",
   "main": "index.js",
   "scripts": {
-    "test": "node test/all.js",
     "install": "node-gyp rebuild"
   },
   "repository": {
