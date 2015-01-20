@@ -30,9 +30,8 @@
                             "-fPIC"
                         ],
                         "OTHER_LDFLAGS": [
-                            "-stdlib=libc++"
-                        ],
-                        "MACOSX_DEPLOYMENT_TARGET": "10.7"
+                            "-stdlib=libstdc++"
+                        ]
                     },
                     "libraries": [ "../deps/libfleaux/lib/mac/libfleaux.a" ] 
                 }],
