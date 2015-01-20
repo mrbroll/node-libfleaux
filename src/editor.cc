@@ -9,12 +9,10 @@ Persistent<Function> Editor::constructor;
 
 Editor::Editor(void)
 {
-    __Cursor = new Cursor(this);
 }
 
 Editor::~Editor(void)
 {
-    delete __Cursor;
 }
 
 void
@@ -23,8 +21,6 @@ Editor::Init(Handle<Object> exports)
     Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
     tpl->SetClassName(String::NewSymbol("Editor"));
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
-    tpl->PrototypeTemplate()->Set(  String::NewSymbol("getCursor"),
-                                    FunctionTemplate::New(GetCursor)->GetFunction());
     Editor::constructor = Persistent<Function>::New(tpl->GetFunction());
     exports->Set(String::NewSymbol("Editor"), Editor::constructor);
 }
@@ -42,16 +38,6 @@ Editor::New(const Arguments& args)
         Local<Value> argv[argc] = { args[0] };
         return scope.Close(constructor->NewInstance(argc, argv));
     }
-}
-
-Handle<Value>
-Editor::GetCursor(const Arguments& args)
-{
-    HandleScope scope;
-    Editor* thisEd = ObjectWrap::Unwrap<Editor>(args.This());
-    Local<Object> cursObj = Object::New();
-    thisEd->__Cursor->Wrap(cursObj);
-    return scope.Close(cursObj);
 }
 
 Persistent<Function> Cursor::constructor;

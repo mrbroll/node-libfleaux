@@ -19,10 +19,6 @@ class Editor : public Fleaux::Editor, public node::ObjectWrap
 
         static Handle<Value> New(const Arguments& args);
         static Persistent<Function> constructor;
-
-        static Handle<Value> GetCursor(const Arguments& args);
-
-        Cursor* __Cursor;
 };
 
 
