@@ -25,6 +25,7 @@ namespace Fleaux
 
             /* constructor(s) & destructor(s) */
             Editor(void);
+            Editor(const string& path);
             ~Editor(void);
 
             /* operator overloads */
@@ -54,19 +55,17 @@ namespace Fleaux
     {
         public:
             /* constructor(s) & destructor(s) */
-            Cursor(Editor* ed) : _index(0), \
-                                 _x(0), \
-                                 _y(0), \
-                                 _editor(ed) {};
+            Cursor(Editor* ed, bool callerIsEditor = false);
             
             /* member functions */
             void insert(const string& input);
             void remove(int length);
+            void replace(int length, const string& replacement);
             inline size_t getIndex(void) { return _index; };
             inline size_t getX(void) { return _x; };
             inline size_t getY(void) { return _y; };
-            void moveV(int offset);
-            void moveH(int offset);
+            void moveX(int offset);
+            void moveY(int offset);
 
         protected:
             /* data members */

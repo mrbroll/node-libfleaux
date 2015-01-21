@@ -3,6 +3,7 @@
 
 #include "../deps/libfleaux/include/editor.hh"
 #include <node.h>
+#include <string>
 
 using namespace v8;
 
@@ -14,18 +15,19 @@ class Editor : public Fleaux::Editor, public node::ObjectWrap
         static void Init(Handle<Object> exports);
 
     private:
-        Editor(void);
-        ~Editor(void);
+        Editor(void) : Fleaux::Editor() {};
+        Editor(const string& path) : Fleaux::Editor(path) {};
+        ~Editor(void) {};
 
         static Handle<Value> New(const Arguments& args);
         static Persistent<Function> constructor;
+
+        static Handle<Value> ToString(const Arguments& args);
 };
 
 
 class Cursor : public Fleaux::Cursor, public node::ObjectWrap
 {
-    friend class Editor;
-
     public:
         static void Init(Handle<Object> exports);
 
@@ -38,11 +40,12 @@ class Cursor : public Fleaux::Cursor, public node::ObjectWrap
 
         static Handle<Value> Insert(const Arguments& args);
         static Handle<Value> Remove(const Arguments& args);
+        static Handle<Value> Replace(const Arguments& args);
         static Handle<Value> GetIndex(const Arguments& args);
         static Handle<Value> GetX(const Arguments& args);
         static Handle<Value> GetY(const Arguments& args);
-        static Handle<Value> MoveH(const Arguments& args);
-        static Handle<Value> MoveV(const Arguments& args);
+        static Handle<Value> MoveX(const Arguments& args);
+        static Handle<Value> MoveY(const Arguments& args);
 };
 
 #endif
