@@ -4,7 +4,8 @@
   "description": "node wrapper for libfleaux",
   "main": "index.js",
   "scripts": {
-    "install": "node-gyp rebuild"
+    "install": "node-gyp rebuild",
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,8 @@
   "gypfile": true,
   "bugs": {
     "url": "https://github.com/mrbroll/node-libfleaux/issues"
+  },
+  "devDependencies": {
+    "mocha": "~2.1.0"
   }
 }

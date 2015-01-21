@@ -7,6 +7,7 @@ if (process.platform === 'linux') { //linux
 } else if (process.platform === 'win32') { //windows
     fleaux = require('./lib/win/fleaux');
 } else {
+    fleaux = require('./build/Release/fleaux');
 }
 
 module.exports = fleaux;
