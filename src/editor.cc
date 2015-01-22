@@ -140,7 +140,7 @@ Cursor::Replace(const Arguments& args)
     } else {
         Cursor* thisCurs = ObjectWrap::Unwrap<Cursor>(args.This());
         int length = (int)args[0]->IntegerValue();
-        string* replacement = new string(*String::Utf8Value(args[0]));
+        string* replacement = new string(*String::Utf8Value(args[1]));
         thisCurs->replace(length, *replacement);
         return scope.Close(Undefined());
     }
