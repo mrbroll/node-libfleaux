@@ -1,21 +1,27 @@
+#ifndef FLEAUX_EDITOR_HH_
+#define FLEAUX_EDITOR_HH_
+
 #include <cstdlib>
+#include "ieditor.hh"
 #include <iostream>
 #include <memory>
 #include <sstream>
 #include <string>
 #include "../deps/libsdnb/include/sdnb/gap_vector.hh"
 
-#ifndef FLEAUX_EDITOR_H_
-#define FLEAUX_EDITOR_H_
-
 using namespace std;
 using namespace SDNB;
 
 namespace Fleaux
 {
+    class Editor;
+
+    ostream& operator<<(ostream& os, const Editor& ed);
+    istream& operator>>(istream& is, Editor& ed);
+
     class Cursor;
 
-    class Editor
+    class Editor : public IEditor
     {
         friend class Cursor;
 
@@ -28,55 +34,51 @@ namespace Fleaux
             Editor(const string& path);
             ~Editor(void);
 
-            /* operator overloads */
-            friend ostream& operator<<(ostream& os, const Editor& ed)
-            {
-                os << string(ed._data->begin(), ed._data->end());
-                return os;
-            };
-            friend istream& operator>>(istream& is, const Editor& ed)
-            {
-                string str;
-                is >> str;
-                ed._data->insert(str.begin(), str.end());
-                return is;
-            };
-
             /* member functions */
-            Cursor* getCursor(void) { return _cursor; };
+            friend ostream& operator<<(ostream& os, const Editor& ed);
+            friend istream& operator>>(istream& is, Editor& ed);
+            void readFromFile(const string& path);
+            void writeToFile(const string& path);
+            ICursor* getCursor(void) { return (ICursor*)__cursor; };
             
-        protected:
+        private:
             /* data members */
-            Cursor* _cursor;
-            GapVector<char>* _data;
+            Cursor* __cursor;
+            GapVector<char>* __data;
     };
 
-    class Cursor
+    class Cursor : public ICursor
     {
         public:
             /* constructor(s) & destructor(s) */
-            Cursor(Editor* ed, bool callerIsEditor = false);
+            Cursor(void) : __index(0), __x(0), __y(0), __editor(NULL) {};
+            Cursor(Editor* ed);
+            Cursor(const ICursor& curs);
             
             /* member functions */
             void insert(const string& input);
             void remove(int length);
             void replace(int length, const string& replacement);
-            inline size_t getIndex(void) { return _index; };
-            inline size_t getX(void) { return _x; };
-            inline size_t getY(void) { return _y; };
-            void moveX(int offset);
-            void moveY(int offset);
+            IEditor* getEditor(void) const { return (IEditor*)__editor; };
+            size_t getIndex(void) const { return __index; };
+            size_t getX(void) const { return __x; };
+            size_t getY(void) const { return __y; };
+            void move(int offsetX, int offsetY);
 
-        protected:
+
+
+        private:
             /* data members */
-            size_t _index;
-            size_t _x;
-            size_t _y;
-            Editor* _editor;
+            size_t __index;
+            size_t __x;
+            size_t __y;
+            Editor* __editor;
 
             /* member functions */
-            void _setXY(void);
-            void _setIndex(void);
+            void __setXY(void);
+            void __setIndex(void);
+            void __moveX(int offset);
+            void __moveY(int offset);
     };
 }
 #endif

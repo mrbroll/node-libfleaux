@@ -5,8 +5,8 @@
 using namespace v8;
 
 void InitAll(Handle<Object> exports) {
-    Editor::Init(exports);
-    Cursor::Init(exports);
+    Fleaux::Node::Editor::Init(exports);
+    Fleaux::Node::Cursor::Init(exports);
 }
 
 NODE_MODULE(fleaux, InitAll)

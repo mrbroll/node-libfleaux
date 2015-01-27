@@ -7,7 +7,8 @@
                 "cflags": [ "-g" ],
             },
             "Release": {
-                "defines": [ "NDEBUG" ]
+                "defines": [ "NDEBUG" ],
+                "cflags": [ "-Wall -Wextra -pedantic" ]
             }
         }
     },

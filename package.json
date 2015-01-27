@@ -24,7 +24,7 @@
     "url": "https://github.com/mrbroll/node-libfleaux/issues"
   },
   "devDependencies": {
-    "mocha": "~2.1.0",
-    "chai": "~1.10.0"
+    "chai": "~1.10.0",
+    "mocha": "~2.1.0"
   }
 }
