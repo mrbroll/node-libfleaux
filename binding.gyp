@@ -8,7 +8,6 @@
             },
             "Release": {
                 "defines": [ "NDEBUG" ],
-                "cflags": [ "-Wall -Wextra -pedantic" ]
             }
         }
     },

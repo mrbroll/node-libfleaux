@@ -24,6 +24,7 @@ class Editor : public Fleaux::Editor, public node::ObjectWrap
     private:
         Editor(void) : Fleaux::Editor() {};
         Editor(const string& path) : Fleaux::Editor(path) {};
+        Editor(const Editor& ed) : Fleaux::Editor(ed) {};
         ~Editor(void) {};
 
         static Handle<Value> New(const Arguments& args);
@@ -39,7 +40,9 @@ class Cursor : public Fleaux::Cursor, public node::ObjectWrap
         static void Init(Handle<Object> exports);
 
     private:
+        Cursor(void) : Fleaux::Cursor() {};
         Cursor(const Fleaux::Node::Editor& ed) : Fleaux::Cursor((Fleaux::Editor*)&ed) {};
+        Cursor(const Cursor& curs) : Fleaux::Cursor(curs) {};
         ~Cursor(void) {};
 
         static Handle<Value> New(const Arguments& args);

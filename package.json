@@ -4,7 +4,7 @@
   "description": "node wrapper for libfleaux",
   "main": "index.js",
   "scripts": {
-    "install": "node-gyp rebuild",
+    "install": "node-gyp rebuild --release",
     "test": "./node_modules/mocha/bin/mocha"
   },
   "repository": {

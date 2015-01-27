@@ -31,13 +31,12 @@ Fleaux::Node::Editor::New(const Arguments& args)
         if (!args[0]->IsUndefined()) {
             string path(*String::Utf8Value(args[0]));
             Fleaux::Node::Editor* ed = new Fleaux::Node::Editor(path);
-            cout << "Editor in Node Editor Constructor: " << ed << endl;
             ed->Wrap(args.This());
-            return args.This();
+            return scope.Close(args.This());
         } else {
             Fleaux::Node::Editor* ed = new Fleaux::Node::Editor();
             ed->Wrap(args.This());
-            return args.This();
+            return scope.Close(args.This());
         }
     } else { //Editor()
         const int argc = 1;
@@ -53,7 +52,7 @@ Fleaux::Node::Editor::ToString(const Arguments& args)
     Fleaux::Node::Editor* thisEd = ObjectWrap::Unwrap<Fleaux::Node::Editor>(args.This());
     stringstream outStream;
     outStream << *thisEd;
-    return scope.Close(String::New(outStream.str().c_str(), thisEd->size));
+    return scope.Close(String::New(outStream.str().c_str(), thisEd->getSize()));
 }
 
 Persistent<Function> Fleaux::Node::Cursor::constructor;
@@ -91,11 +90,9 @@ Fleaux::Node::Cursor::New(const Arguments& args)
             return ThrowException(String::New("ERROR: Cursor::New - Must provide an argument"));
         } else {
             Fleaux::Node::Editor* ed = ObjectWrap::Unwrap<Fleaux::Node::Editor>(args[0]->ToObject());
-            cout << "Editor in Node Cursor constructor: " << ed << endl;
             Fleaux::Node::Cursor* curs = new Fleaux::Node::Cursor(*ed);
-            cout << "Created Cursor!" << endl;
             curs->Wrap(args.This());
-            return args.This();
+            return scope.Close(args.This());
         }
     } else {
         const int argc = 1;
